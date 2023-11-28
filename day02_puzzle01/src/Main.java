@@ -2,24 +2,55 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Main {
-    public static void main(String[] args) {
-        List<String> input = null;
-        try {
-            input = readInput();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+
+    private static final Logger logger = Logger.getLogger(Main.class.getName());
+
+    private static void logException(Exception e){
+        StringBuilder str = new StringBuilder();
+
+        str.append(e.toString());
+        str.append(System.getProperty("line.separator"));
+
+        str.append("Stack Trace:");
+
+        for(StackTraceElement el : e.getStackTrace()){
+            str.append(System.getProperty("line.separator"));
+            str.append("\t=> ");
+            str.append(el);
         }
 
-        System.out.println(getTotalWrapperSizeNeeded(input));
+        logger.log(Level.WARNING, str.toString());
+    }
+    public static void main(String[] args) {
+
+        try {
+            List<String> input = readInput();
+            System.out.println(getTotalProperWrapperSize(input));
+            System.out.println(getTotalCheapWrapperSize(input));
+        } catch (Exception e) {
+            logException(e);
+        }
     }
 
-    private static int getTotalWrapperSizeNeeded(List<String> input) {
+    private static int getTotalProperWrapperSize(List<String> input) throws WrongDimensionException, EmptyInputException {
         int totalSize = 0;
         for(String line : input){
             Gift gift = new Gift(line);
-            totalSize += gift.getWrapperSizeNeeded();
+            totalSize += gift.getWrapperSize();
+        }
+
+        return totalSize;
+    }
+
+    private static int getTotalCheapWrapperSize(List<String> input) throws WrongDimensionException, EmptyInputException {
+        int totalSize = 0;
+        for(String line : input){
+            Gift gift = new Gift(line);
+            totalSize += gift.getRibbonSize();
         }
 
         return totalSize;
