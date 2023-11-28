@@ -7,6 +7,14 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class SantaHelperTest {
 
     @Test
+    void checkDestinationFloorWhenUnexpectedChar() {
+        String input = "a";
+        SantaHelper helper = new SantaHelper(input);
+        Exception exception = assertThrows(Exception.class, helper::getDestinationFloor);
+        assertEquals("Unexpected char in the input string!", exception.getMessage());
+    }
+
+    @Test
     void checkDestinationFloor0_Test1() throws Exception {
         String input = "(())";
         SantaHelper helper = new SantaHelper(input);
