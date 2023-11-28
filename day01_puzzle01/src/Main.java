@@ -1,32 +1,47 @@
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Main {
+
+    private static final Logger logger = Logger.getLogger(Main.class.getName());
+
     public static void main(String[] args) {
         String input = readInput();
-        System.out.println(getFloor(input));
+        SantaHelper helper = new SantaHelper(input);
+
+        try {
+            System.out.println("Answer for Puzzle #1 = " + helper.getDestinationFloor());
+            System.out.println("Answer for Puzzle #2 = " + helper.getFirstBasementPosition());
+        } catch (Exception e) {
+            logException(e);
+        }
     }
 
-    public static int getFloor(String input){
-        int floor = 0;
+    private static void logException(Exception e){
+        StringBuilder str = new StringBuilder();
 
-        char[] ch = input.toCharArray();
-        for (char c : ch) {
-            if (c == '(') {
-                floor++;
-            } else {
-                floor--;
-            }
+        str.append(e.toString());
+        str.append(System.getProperty("line.separator"));
+
+        str.append("Stack Trace:");
+
+        for(StackTraceElement el : e.getStackTrace()){
+            str.append(System.getProperty("line.separator"));
+            str.append("\t=> ");
+            str.append(el);
         }
 
-        return floor;
+        logger.log(Level.WARNING, str.toString());
     }
 
-    public static String readInput(){
+    private static String readInput(){
         try {
             return new String(Files.readAllBytes(Paths.get("src\\input")));
         } catch (IOException e) {
+            logException(e);
             throw new RuntimeException(e);
         }
     }
